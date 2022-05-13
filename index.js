@@ -74,6 +74,10 @@ app.post("/api/stream", async function (req, res) {
  * isActive: true means video segments are currently being ingested by Livepeer.com. isActive: false means the live stream is idle and no
  * video segments are currently being ingested by Livepeer.com.
  */
+
+
+
+
 app.use("/api/stream/:streamId", async function (req, res) {
   const authorizationHeader = req.headers && req.headers["authorization"];
   const streamId = req.params.streamId;
