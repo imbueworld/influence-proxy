@@ -13,12 +13,116 @@ app.use(bodyParser.json());
 app.use(cors({ origin: "*" }));
 
 app.get(["/", "/:name"], (req, res) => {
-  greeting = "<h1>Hello From Node on Fly!</h1>";
-  name = req.params["name"];
+  console.log("hello");
+ let greeting = "<h1>Hello From Node on Fly!</h1>";
+  let name = req.params["name"];
   if (name) {
     res.send(greeting + "</br>and hello to " + name);
   } else {
     res.send(greeting);
+  }
+});
+
+/**
+ * calls the /stream?streamsonly=1&filters=[{"id": "record", "value": true}] route of Livepeer.com APIs to get list of recorded stream.
+ * The response returns the empty content.
+ */
+app.get("/api/stream/recordedstream", async (req, res) => {
+  const authorizationHeader = req.headers && req.headers["authorization"];
+  try {
+    const streamStatusResponse = await axios.get(
+      // 'https://livepeer.com/api/stream?streamsonly=1&filters=[{"id": "record", "value": true}]',
+      'https://livepeer.com/api/asset',
+      {
+        headers: {
+          "content-type": "application/json",
+          authorization: authorizationHeader, // API Key needs to be passed as a header
+        },
+      }
+    );
+    if (streamStatusResponse && streamStatusResponse.data) {
+      res.statusCode = 200;
+      res.json({ ...streamStatusResponse.data });
+    } else {
+      res.statusCode = 500;
+      res.json({ error: "Something went wrong" });
+    }
+  } catch (error) {
+    res.statusCode = 500;
+    res.json({ error });
+  }
+});
+
+/**
+ * calls the /api/stream/:streamId/sessions route of Livepeer.com APIs to get stream recorded video url.
+ * The response returns the empty content.
+ */
+
+app.get("/api/stream/:streamId", async (req, res) => {
+  const authorizationHeader = req.headers && req.headers["authorization"];
+  const streamId = req.params.streamId;
+  try {
+    const streamStatusResponse = await axios.get(
+      // `https://livepeer.com/api/stream/${streamId}/sessions`,
+      `https://livepeer.com/api/asset/${streamId}`,
+      {
+        headers: {
+          "content-type": "application/json",
+          authorization: authorizationHeader, // API Key needs to be passed as a header
+        },
+      }
+    );
+
+    if (streamStatusResponse && streamStatusResponse.data) {
+      res.statusCode = 200;
+      res.json({ ...streamStatusResponse.data });
+    } else {
+      res.statusCode = 500;
+      res.json({ error: "Something went wrong" });
+    }
+  } catch (error) {
+    res.statusCode = 500;
+    res.json({ error });
+  }
+});
+
+/**
+ * calls the /stream/:streamId/record route of Livepeer.com APIs to enable recording in stream.
+ * The response returns the empty content.
+ */
+
+app.patch("/api/stream/:streamId/record", async (req, res) => {
+  const authorizationHeader = req.headers && req.headers["authorization"];
+  const streamId = req.params["streamId"];
+  const isRecord = req.body && req.body.record;
+  try {
+    const enableStreamRecordRespose = await axios.patch(
+      `https://livepeer.com/api/stream/${streamId}/record`,
+      { record: isRecord },
+      {
+        headers: {
+          "content-type": "application/json",
+          authorization: authorizationHeader,
+        },
+      }
+    );
+    console.log(enableStreamRecordRespose.status);
+    if (enableStreamRecordRespose.status == 204) {
+      res.statusCode = 204;
+      res.json({ status: "success" });
+    } else {
+      res.statusCode = 500;
+      res.json({ error: "Something went wrong" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.statusCode = 500;
+
+    // Handles Invalid API key error
+    if (error.response.status === 403) {
+      res.statusCode = 403;
+    }
+    res.json({ error });
   }
 });
 
@@ -74,9 +178,6 @@ app.post("/api/stream", async function (req, res) {
  * isActive: true means video segments are currently being ingested by Livepeer.com. isActive: false means the live stream is idle and no
  * video segments are currently being ingested by Livepeer.com.
  */
-
-
-
 
 app.use("/api/stream/:streamId", async function (req, res) {
   const authorizationHeader = req.headers && req.headers["authorization"];
