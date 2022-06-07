@@ -106,7 +106,6 @@ app.patch("/api/stream/:streamId/record", async (req, res) => {
         },
       }
     );
-    console.log(enableStreamRecordRespose.status);
     if (enableStreamRecordRespose.status == 204) {
       res.statusCode = 204;
       res.json({ status: "success" });
@@ -115,7 +114,6 @@ app.patch("/api/stream/:streamId/record", async (req, res) => {
       res.json({ error: "Something went wrong" });
     }
   } catch (error) {
-    console.log(error);
     res.statusCode = 500;
 
     // Handles Invalid API key error
@@ -180,7 +178,6 @@ app.post("/api/stream", async function (req, res) {
  */
 
 app.use("/api/stream/:streamId", async function (req, res) {
-  console.log('hello')
   const authorizationHeader = req.headers && req.headers["authorization"];
   const streamId = req.params.streamId;
 
@@ -195,7 +192,6 @@ app.use("/api/stream/:streamId", async function (req, res) {
           },
         }
       );
-      console.log(streamStatusResponse.data)
 
       if (streamStatusResponse && streamStatusResponse.data) {
         res.statusCode = 200;
