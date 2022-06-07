@@ -58,7 +58,7 @@ app.get("/api/stream/recordedstream", async (req, res) => {
  * The response returns the empty content.
  */
 
-app.get("/api/stream/:streamId", async (req, res) => {
+app.get("/api/stream/streamurl/:streamId", async (req, res) => {
   const authorizationHeader = req.headers && req.headers["authorization"];
   const streamId = req.params.streamId;
   try {
@@ -180,6 +180,7 @@ app.post("/api/stream", async function (req, res) {
  */
 
 app.use("/api/stream/:streamId", async function (req, res) {
+  console.log('hello')
   const authorizationHeader = req.headers && req.headers["authorization"];
   const streamId = req.params.streamId;
 
@@ -194,6 +195,7 @@ app.use("/api/stream/:streamId", async function (req, res) {
           },
         }
       );
+      console.log(streamStatusResponse.data)
 
       if (streamStatusResponse && streamStatusResponse.data) {
         res.statusCode = 200;
@@ -203,6 +205,7 @@ app.use("/api/stream/:streamId", async function (req, res) {
         res.json({ error: "Something went wrong" });
       }
     } catch (error) {
+      console.log(error)
       res.statusCode = 500;
       res.json({ error });
     }
