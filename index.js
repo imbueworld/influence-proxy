@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const axios = require("axios");
 const cors = require("cors");
 const url = require("url");
+const mt = require("media-thumbnail");
+const fs = require("fs");
 
 const WebSocketServer = require("ws").Server;
 const child_process = require("child_process");
@@ -14,13 +16,41 @@ app.use(cors({ origin: "*" }));
 
 app.get(["/", "/:name"], (req, res) => {
   console.log("hello");
- let greeting = "<h1>Hello From Node on Fly!</h1>";
+  let greeting = "<h1>Hello From Node on Fly!</h1>";
   let name = req.params["name"];
   if (name) {
     res.send(greeting + "</br>and hello to " + name);
   } else {
     res.send(greeting);
   }
+});
+
+app.get("/api/stream/thumbnail/:stremId", async (req, res) => {
+  let stremId = req.params.stremId;
+  let videoUrl = req.query.url;
+
+  console.log(videoUrl);
+
+  const path = `./thumb/${stremId}_thumbnail.png`;
+
+  if (fs.existsSync(path)) {
+    res.sendFile(
+      `/home/nikhil/Office_Projects/twitch-project/imbue-full/influence-proxy/thumb/${stremId}_thumbnail.png`
+    );
+    // path exists
+    console.log("exists:", path);
+  } else {
+    console.log("DOES NOT exist:", path);
+    await mt.forVideo(videoUrl, `./thumb/${stremId}_thumbnail.png`, {
+      width: 200,
+    });
+  
+    res.sendFile(
+      `/home/nikhil/Office_Projects/twitch-project/imbue-full/influence-proxy/thumb/${stremId}_thumbnail.png`
+    );
+  }
+
+
 });
 
 /**
@@ -32,7 +62,7 @@ app.get("/api/stream/recordedstream", async (req, res) => {
   try {
     const streamStatusResponse = await axios.get(
       // 'https://livepeer.com/api/stream?streamsonly=1&filters=[{"id": "record", "value": true}]',
-      'https://livepeer.com/api/asset',
+      "https://livepeer.com/api/asset",
       {
         headers: {
           "content-type": "application/json",
@@ -201,7 +231,7 @@ app.use("/api/stream/:streamId", async function (req, res) {
         res.json({ error: "Something went wrong" });
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       res.statusCode = 500;
       res.json({ error });
     }
