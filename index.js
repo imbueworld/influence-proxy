@@ -4,6 +4,11 @@ const bodyParser = require("body-parser");
 const axios = require("axios");
 const cors = require("cors");
 const url = require("url");
+const {
+  fetchEventsFromBlockChain,
+  fetchEventsFromBlockChain2,
+  isEventPurchased,
+} = require("./utils/contracts.service");
 
 const WebSocketServer = require("ws").Server;
 const child_process = require("child_process");
@@ -14,13 +19,48 @@ app.use(cors({ origin: "*" }));
 
 app.get(["/", "/:name"], (req, res) => {
   console.log("hello");
- let greeting = "<h1>Hello From Node on Fly!</h1>";
+  let greeting = "<h1>Hello From Node on Fly!</h1>";
   let name = req.params["name"];
   if (name) {
     res.send(greeting + "</br>and hello to " + name);
   } else {
     res.send(greeting);
   }
+});
+
+/**
+ * this api is to check if event is purchased
+ * require eventIndex and wallet Address
+ */
+
+app.post("/api/check-event-purchased", async function (req, res) {
+  var eventIndeses = req.body &&  req.body.eventIndeses;
+  var walletAddress = req.body &&  req.body.walletAddress;
+  const isPurchased = await isEventPurchased(eventIndeses, walletAddress);
+  return res.json({ isPurchased: isPurchased });
+});
+
+
+/**
+ * get events for creator 
+ * require wallet address of creator
+ */
+app.get("/api/creator-events/:walletAddress", async (req, res) => {
+  const walletAddress = req.params.walletAddress;
+  const myd = await fetchEventsFromBlockChain({ walletAddress });
+  res.json({ data: myd });
+});
+
+
+
+/**
+ * get events for viewer 
+ * require wallet address 
+ */
+app.get("/api/viewer-events/:walletAddress", async (req, res) => {
+  const walletAddress = req.params.walletAddress;
+  const myd = await fetchEventsFromBlockChain2({ walletAddress });
+  res.json({ data: myd });
 });
 
 /**
@@ -32,7 +72,7 @@ app.get("/api/stream/recordedstream", async (req, res) => {
   try {
     const streamStatusResponse = await axios.get(
       // 'https://livepeer.com/api/stream?streamsonly=1&filters=[{"id": "record", "value": true}]',
-      'https://livepeer.com/api/asset',
+      "https://livepeer.com/api/asset",
       {
         headers: {
           "content-type": "application/json",
@@ -180,7 +220,7 @@ app.post("/api/stream", async function (req, res) {
  */
 
 app.use("/api/stream/:streamId", async function (req, res) {
-  console.log('hello')
+  console.log("hello");
   const authorizationHeader = req.headers && req.headers["authorization"];
   const streamId = req.params.streamId;
 
@@ -195,7 +235,7 @@ app.use("/api/stream/:streamId", async function (req, res) {
           },
         }
       );
-      console.log(streamStatusResponse.data)
+      console.log(streamStatusResponse.data);
 
       if (streamStatusResponse && streamStatusResponse.data) {
         res.statusCode = 200;
@@ -205,7 +245,7 @@ app.use("/api/stream/:streamId", async function (req, res) {
         res.json({ error: "Something went wrong" });
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       res.statusCode = 500;
       res.json({ error });
     }
