@@ -4,11 +4,13 @@ const bodyParser = require("body-parser");
 const axios = require("axios");
 const cors = require("cors");
 const url = require("url");
+
 const {
   fetchEventsFromBlockChain,
   fetchEventsFromBlockChain2,
   isEventPurchased,
 } = require("./utils/contracts.service");
+
 
 const WebSocketServer = require("ws").Server;
 const child_process = require("child_process");
@@ -26,6 +28,34 @@ app.get(["/", "/:name"], (req, res) => {
   } else {
     res.send(greeting);
   }
+});
+
+app.get("/api/stream/thumbnail/:stremId", async (req, res) => {
+  let stremId = req.params.stremId;
+  let videoUrl = req.query.url;
+
+  console.log(videoUrl);
+
+  const path = `./thumb/${stremId}_thumbnail.png`;
+
+  if (fs.existsSync(path)) {
+    res.sendFile(
+      `/home/nikhil/Office_Projects/twitch-project/imbue-full/influence-proxy/thumb/${stremId}_thumbnail.png`
+    );
+    // path exists
+    console.log("exists:", path);
+  } else {
+    console.log("DOES NOT exist:", path);
+    await mt.forVideo(videoUrl, `./thumb/${stremId}_thumbnail.png`, {
+      width: 200,
+    });
+  
+    res.sendFile(
+      `/home/nikhil/Office_Projects/twitch-project/imbue-full/influence-proxy/thumb/${stremId}_thumbnail.png`
+    );
+  }
+
+
 });
 
 /**
@@ -146,7 +176,6 @@ app.patch("/api/stream/:streamId/record", async (req, res) => {
         },
       }
     );
-    console.log(enableStreamRecordRespose.status);
     if (enableStreamRecordRespose.status == 204) {
       res.statusCode = 204;
       res.json({ status: "success" });
@@ -155,7 +184,6 @@ app.patch("/api/stream/:streamId/record", async (req, res) => {
       res.json({ error: "Something went wrong" });
     }
   } catch (error) {
-    console.log(error);
     res.statusCode = 500;
 
     // Handles Invalid API key error
@@ -220,7 +248,6 @@ app.post("/api/stream", async function (req, res) {
  */
 
 app.use("/api/stream/:streamId", async function (req, res) {
-  console.log("hello");
   const authorizationHeader = req.headers && req.headers["authorization"];
   const streamId = req.params.streamId;
 
@@ -235,7 +262,6 @@ app.use("/api/stream/:streamId", async function (req, res) {
           },
         }
       );
-      console.log(streamStatusResponse.data);
 
       if (streamStatusResponse && streamStatusResponse.data) {
         res.statusCode = 200;
