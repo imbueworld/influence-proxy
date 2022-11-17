@@ -1487,7 +1487,7 @@ const abiArbitrum = [
 ];
 
 const abis = new Map([
-  ["0x45", abiEthereumTest],
+  // ["0x45", abiEthereumTest],
   // ["0xA", abiEthereum],
   // ["0x6357D2E0", abiHarmonyTest],
   // ["0x63564C40", abiHarmony],
@@ -1496,7 +1496,7 @@ const abis = new Map([
 ]);
 
 const addressMap = new Map([
-  ["0x45", "0x02ed220846b7ec387069e66f4e0d15896445a719"], //Optimistic
+  // ["0x45", "0x02ed220846b7ec387069e66f4e0d15896445a719"], //Optimistic
   // ["0xA", "0xb2d44f91bfba624369940645ef54ef86a1ee90f0"],
   // ["0x6357D2E0", "0x188a6d53d2ad50deb9d3fa93edb8feceaf67b2be"], //Harmony
   // ["0x63564C40", "0x3829f87b08d6d37b319850fa17b2c081b1b83301"],
@@ -1505,7 +1505,7 @@ const addressMap = new Map([
 ]);
 
 const rpcMap = new Map([
-  ["0x45", "https://kovan.optimism.io"], //Optimistic
+  // ["0x45", "https://kovan.optimism.io"], //Optimistic
   // ["0xA", ""],
   // ["0x6357D2E0", ""], //Harmony
   // ["0x63564C40", ""],
@@ -1543,10 +1543,10 @@ const fetchUpcomingEvents = async ({ chainId, walletAddress }) => {
 const fetchEventsFromBlockChain = async ({ walletAddress }) => {
   try {
     let eventsList = [];
-    const evnets1 = await fetchUpcomingEvents({
-      chainId: "0x45",
-      walletAddress: walletAddress,
-    });
+    // const evnets1 = await fetchUpcomingEvents({
+    //   chainId: "0x45",
+    //   walletAddress: walletAddress,
+    // });
 
     // console.log("----------------", evnets1);
 
@@ -1554,28 +1554,29 @@ const fetchEventsFromBlockChain = async ({ walletAddress }) => {
       chainId: "0x13881",
       walletAddress: walletAddress,
     });
-
+    // console.log("----------------", evnets2);
 
     const evnets3 = await fetchUpcomingEvents({
       chainId: "0x66EEB",
       walletAddress: walletAddress,
     });
+    // console.log("----------------", evnets3);
 // add condition if list empty return empty array
     eventsList = [
-      ...evnets1.map((event) => {
-        return {
-          _index: event._index.toString(),
-          _owner: event._owner,
-          _name: event._name,
-          _start: event._start.toString(),
-          _duration: event._duration.toString(),
-          _description: event._description,
-          _price: event._price.toString(),
-          _thumbnail: event._thumbnail,
-          _chainId: event._chainId,
-          _streamData: event._streamData,
-        };
-      }),
+      // ...evnets1.map((event) => {
+      //   return {
+      //     _index: event._index.toString(),
+      //     _owner: event._owner,
+      //     _name: event._name,
+      //     _start: event._start.toString(),
+      //     _duration: event._duration.toString(),
+      //     _description: event._description,
+      //     _price: event._price.toString(),
+      //     _thumbnail: event._thumbnail,
+      //     _chainId: event._chainId,
+      //     _streamData: event._streamData,
+      //   };
+      // }),
       ...evnets2.map((event) => {
         return {
           _index: event._index.toString(),
@@ -1611,7 +1612,7 @@ const fetchEventsFromBlockChain = async ({ walletAddress }) => {
     var reqmdata = [];
     for (const key in groudpByEventData) {
       let onekeyData = groudpByEventData[key];
-      console.log(`${key}: ${onekeyData}`);
+      // console.log(`${key}: ${onekeyData}`);
       const uniqueChainIdArray = [
         ...new Set(onekeyData.map((item) => item._chainId)),
       ]; // [ 'A', 'B']
@@ -1634,7 +1635,7 @@ const fetchEventsFromBlockChain = async ({ walletAddress }) => {
       reqmdata.push(myacObj);
     }
 
-    console.log(reqmdata);
+    // console.log(reqmdata);
     return reqmdata.map((el) => {
       return { ...el, id: Math.random().toString(16).slice(2) };
     });
@@ -1647,12 +1648,12 @@ const fetchEventsFromBlockChain = async ({ walletAddress }) => {
 const fetchEventsFromBlockChain2 = async ({ walletAddress }) => {
   try {
     let eventsList = [];
-    const evnets1 = await fetchUpcomingEvents({
-      chainId: "0x45",
-      walletAddress: "0x0000000000000000000000000000000000000000",
-    });
+    // const evnets1 = await fetchUpcomingEvents({
+    //   chainId: "0x45",
+    //   walletAddress: "0x0000000000000000000000000000000000000000",
+    // });
 
-    console.log("----------------", evnets1);
+    // console.log("----------------", evnets1);
 
     const evnets2 = await fetchUpcomingEvents({
       chainId: "0x13881",
@@ -1664,20 +1665,20 @@ const fetchEventsFromBlockChain2 = async ({ walletAddress }) => {
       walletAddress: "0x0000000000000000000000000000000000000000",
     });
     eventsList = [
-      ...evnets1.map((event) => {
-        return {
-          _index: event._index.toString(),
-          _owner: event._owner,
-          _name: event._name,
-          _start: event._start.toString(),
-          _duration: event._duration.toString(),
-          _description: event._description,
-          _price: event._price.toString(),
-          _thumbnail: event._thumbnail,
-          _chainId: event._chainId,
-          _streamData: event._streamData,
-        };
-      }),
+      // ...evnets1.map((event) => {
+      //   return {
+      //     _index: event._index.toString(),
+      //     _owner: event._owner,
+      //     _name: event._name,
+      //     _start: event._start.toString(),
+      //     _duration: event._duration.toString(),
+      //     _description: event._description,
+      //     _price: event._price.toString(),
+      //     _thumbnail: event._thumbnail,
+      //     _chainId: event._chainId,
+      //     _streamData: event._streamData,
+      //   };
+      // }),
       ...evnets2.map((event) => {
         return {
           _index: event._index.toString(),
@@ -1713,12 +1714,12 @@ const fetchEventsFromBlockChain2 = async ({ walletAddress }) => {
     );
     // return filterList;
 
-    console.log(groupBy(filterList, "_streamData"));
+    // console.log(groupBy(filterList, "_streamData"));
     let groudpByEventData = groupBy(filterList, "_streamData");
     var reqmdata = [];
     for (const key in groudpByEventData) {
       let onekeyData = groudpByEventData[key];
-      console.log(`${key}: ${onekeyData}`);
+      // console.log(`${key}: ${onekeyData}`);
       const uniqueChainIdArray = [
         ...new Set(onekeyData.map((item) => item._chainId)),
       ]; // [ 'A', 'B']
@@ -1742,7 +1743,7 @@ const fetchEventsFromBlockChain2 = async ({ walletAddress }) => {
       reqmdata.push(myacObj);
     }
 
-    console.log(reqmdata);
+    // console.log(reqmdata);
 
     return reqmdata.map((el) => {
       return { ...el, id: Math.random().toString(16).slice(2) };
@@ -1754,7 +1755,7 @@ const fetchEventsFromBlockChain2 = async ({ walletAddress }) => {
 };
 
 const isEventPurchased = async (eventIndexes, walletAddress) => {
-  console.log(eventIndexes,walletAddress,"=============")
+  // console.log(eventIndexes,walletAddress,"=============")
   const pro = await Promise.all(
     eventIndexes.map(async (el) => {
       const provider = new ethers.providers.JsonRpcProvider(rpcMap.get(el.chainId));
@@ -1767,12 +1768,12 @@ const isEventPurchased = async (eventIndexes, walletAddress) => {
         BigNumber.from(el.index),
         walletAddress
       );
-      console.log(a)
+      // console.log(a)
       return a;
     })
   );
 
-  console.log("========================================",!pro.every(element => element === false));
+  // console.log("========================================",!pro.every(element => element === false));
   return !pro.every(element => element === false);
 };
 

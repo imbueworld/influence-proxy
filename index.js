@@ -34,7 +34,7 @@ app.get("/api/stream/thumbnail/:stremId", async (req, res) => {
   let stremId = req.params.stremId;
   let videoUrl = req.query.url;
 
-  console.log(videoUrl);
+  // console.log(videoUrl);
 
   const path = `./thumb/${stremId}_thumbnail.png`;
 
